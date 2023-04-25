@@ -5,7 +5,7 @@ import { useGoogleLogin } from "@react-oauth/google";
 import UserAvatar from "./userAvatar";
 
 async function getUserInfo(codeResponse) {
-  var response = await fetch("http://127.0.0.1:5000/google_login", {
+  var response = await fetch("/google_login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -13,6 +13,19 @@ async function getUserInfo(codeResponse) {
     body: JSON.stringify({ code: codeResponse.code }),
   });
   return await response.json();
+}
+
+async function getProtected() {
+  var response = await fetch("/protected", {
+    method: "GET",
+    credentials: "include",
+    mode: "cors",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((msg) => console.log(msg));
 }
 export default function Auth() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -27,6 +40,7 @@ export default function Auth() {
   });
 
   const handleLogout = () => {
+    getProtected();
     setLoggedIn(false);
   };
 
